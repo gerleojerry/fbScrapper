@@ -1,0 +1,44 @@
+from splinter import Browser
+from bs4 import BeautifulSoup as soup
+import re
+import pandas as pd
+import matplotlib.pyplot as plt
+import time
+
+browser = Browser('chrome')
+# base_url = "https://www.facebook.com"
+
+
+#Set up full url
+url = "https://www.facebook.com/jeremiah.ayodelegerleo"
+
+browser.visit(url)
+
+if browser.is_element_present_by_css('div[aria-label="Close"]', wait_time=10):
+    # Click on the element once it's found
+    browser.find_by_css('div[aria-label="Close"]').first.click()
+
+
+scroll_count = 4
+
+scroll_delay = 2
+
+for _ in range(scroll_count):
+    # Execute JavaScript to scroll to the bottom of the page
+    browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(scroll_delay)
+
+
+html = browser.html
+
+activity_soup = soup(html, 'html.parser')
+# Check if HTML was scraped correctly
+print(activity_soup)
+
+browser.quit()
+
+
+names = activity_soup.find_all('span', class_="xt0psk2")
+names_list = [name.text.strip() for name in names]
+
+
